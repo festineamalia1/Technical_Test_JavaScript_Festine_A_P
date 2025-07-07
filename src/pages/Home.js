@@ -26,6 +26,8 @@ export default function Home() {
 
     const [show, setShow] = useState(false);
 
+     const [nameJadwal, setNameJadwal] = useState();
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -47,7 +49,6 @@ const TOKEN = localStorage.getItem('token')
            
           console.log(response);
            setDataChecklist(response)
-  
           
         })
         .catch(function (error) {
@@ -62,6 +63,35 @@ const TOKEN = localStorage.getItem('token')
     console.log("dataChecklist", dataChecklist)
 
 
+
+       const handleTambahNotes = (e) => {
+      e.preventDefault();
+    const headers = {
+      'Authorization': `Bearer ${TOKEN}`
+    };
+    axios
+      .post(
+        `${API}/checklist`,
+        {
+          
+          name: nameJadwal
+        },
+        {
+          headers: headers,
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        alert("Jadwal Berhasil Ditambah");
+        window.location.reload();
+      })
+      .catch(function (error) {
+        console.log(error);
+        alert(
+          "Jadwal Gagal Di Tambah"
+        );
+      });
+  };
     useEffect(() => {
         fetchCheckList();
       }, []);
@@ -136,17 +166,13 @@ const TOKEN = localStorage.getItem('token')
           <div className="row px-3">
             <div className="col ">
           <div className="row">
-            <input type="text" className="form-control" placeholder="Masukkan Judul"  />
+            Judul Jadwal :
+            <input type="text" className="form-control" placeholder="Masukkan Judul"  
+            value={nameJadwal}
+            onChange={(e) => setNameJadwal(e.target.value)}
+            />
           </div>
-           <div className="row mt-3">
-            <input type="text" className="form-control" placeholder="Masukkan Item Jadwal"  />
-          </div>
-           <div className="row mt-3">
-            <input type="text" className="form-control" placeholder="Masukkan Item Jadwal"  />
-          </div>
-           <div className="row mt-3">
-            <input type="text" className="form-control" placeholder="Masukkan Item Jadwal"  />
-          </div>
+      
           </div>
           </div>
         </Modal.Body>
@@ -154,8 +180,8 @@ const TOKEN = localStorage.getItem('token')
           <Button variant="secondary" onClick={handleClose}>
             Close
           </Button>
-          <Button variant="primary" onClick={handleClose}>
-            Save Changes
+          <Button variant="primary" onClick={(e)=> {handleTambahNotes(e)}}>
+            Save 
           </Button>
         </Modal.Footer>
       </Modal>
