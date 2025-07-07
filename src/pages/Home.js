@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef  } from "react";
 import NavBar from "../components/NavBar";
 import { API } from "config/api";
 import axios from "axios";
@@ -8,6 +8,8 @@ import Paper from '@mui/material/Paper';
 import Masonry from '@mui/lab/Masonry';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Overlay from 'react-bootstrap/Overlay';
+import Popover from 'react-bootstrap/Popover';
 
 // const heights = [150, 30, 90, 70, 90, 100, 150, 30, 50, 80];
 
@@ -23,25 +25,35 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Home() {
-
-    const [show, setShow] = useState(false);
+ 
+  const [show, setShow] = useState(false);
   const [smShow, setSmShow] = useState(false);
-     const [nameJadwal, setNameJadwal] = useState();
-
-       const [nameItems, setNameItems] = useState();
-          const [idJadwal, setIdJadwal] = useState();
+  const [deleteShow, setDeleteShow] = useState(false);
+  const [nameJadwal, setNameJadwal] = useState();
+  const [nameItems, setNameItems] = useState();
+  const [idJadwal, setIdJadwal] = useState();
+  const [dataChecklist, setDataChecklist] = useState();
+  
+  const [showPop, setShowPop] = useState(false);
+  const [target, setTarget] = useState(null);
+  const ref = useRef(null);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
 
 
+  const handleClick = (e, id) => {
+    setShowPop(!showPop);
+    setTarget(e.target);
+    setIdJadwal(id)
+  };
 
-const [dataChecklist, setDataChecklist] = useState();
+
+
 
   const handleSetId = (id) => {
     setSmShow(true)
-    setIdJadwal(id)
   }
 
   console.log("idJadwal", idJadwal)
@@ -133,6 +145,32 @@ const TOKEN = localStorage.getItem('token')
         );
       });
   };
+
+     const handleDeleteChecklist = (e) => {
+      e.preventDefault();
+    const headers = {
+      'Authorization': `Bearer ${TOKEN}`
+    };
+    axios
+      .delete(
+        `${API}/checklist/${idJadwal}`,
+        {
+          headers: headers,
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        alert("Checklist Berhasil Hapus");
+        window.location.reload();
+      })
+      .catch(function (error) {
+        console.log(error);
+        alert(
+          "Checklist gagal Hapus"
+        );
+      });
+  };
+
     useEffect(() => {
         fetchCheckList();
       }, []);
@@ -166,14 +204,37 @@ const TOKEN = localStorage.getItem('token')
           // sx={{ height }}
           >
             <div className="row py-3 px-3 d-flex align-items-center">
-              <div className="col-md-9">
+              <div className="col-md-8">
                 <h5>{data?.name}</h5>
                 
                 </div>
-              <div className="col d-flex align-items-end justify-content-end">
+              <div className="col d-flex align-items-end justify-content-end" ref={ref}>
                 <button type="button" class="btn btn-outline-info"
-                onClick={() => handleSetId(data?.id)}
-                >+</button> 
+                
+                onClick={(e) => handleClick(e, data?.id)}
+                ><i class="bi bi-gear"></i></button> 
+
+                <Overlay
+        show={showPop}
+        target={target}
+        placement="bottom"
+        container={ref}
+        containerPadding={20}
+      >
+        <Popover id="popover-contained">
+        
+          <Popover.Body>
+           <ul class="list-group list-group-flush">
+            
+              <li class="list-group-item" onClick={() => handleSetId(data?.id)}>Tambah Item</li>
+              <li class="list-group-item">Delete Item</li>
+              <li class="list-group-item">Edit Item</li>
+              <li class="list-group-item">Rename Item</li>
+              <li class="list-group-item" onClick={() => setDeleteShow(true)}>Delete Checklist</li>
+            </ul>
+          </Popover.Body>
+        </Popover>
+      </Overlay>
                 </div>
               
               </div>
@@ -202,6 +263,8 @@ const TOKEN = localStorage.getItem('token')
         ))}
       </Masonry>
     </Box>
+
+
           </div>
          
       </div>
@@ -260,6 +323,29 @@ const TOKEN = localStorage.getItem('token')
           </Button>
           <Button variant="primary" onClick={(e)=> {handleTambahItems(e)}}>
             Save 
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+
+       <Modal
+       
+        show={deleteShow}
+        onHide={() => setDeleteShow(false)}
+       
+      >
+        <Modal.Header closeButton>
+         
+        </Modal.Header>
+        <Modal.Body>
+         Apakah Anda yakin menghapus checklist ini ?
+        </Modal.Body>
+           <Modal.Footer>
+          <Button variant="secondary" onClick={() => setDeleteShow(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={(e) => handleDeleteChecklist(e)}>
+            Delete
           </Button>
         </Modal.Footer>
       </Modal>
