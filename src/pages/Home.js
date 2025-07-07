@@ -45,7 +45,7 @@ export default function Home() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-
+  const TOKEN = localStorage.getItem('token')
 
   const handleClick = (e, id) => {
     setShowPop(!showPop);
@@ -54,33 +54,27 @@ export default function Home() {
     
   };
 
-
-
-
   const handleSetId = (id) => {
     setSmShow(true)
     
   }
-
-  console.log("idJadwal", idJadwal)
 
    const handleRenameId = (id, name) => {
     setIdItems(id)
     setEditItems(name)
   }
 
-  console.log("rename", idItems, editItems)
 
-const TOKEN = localStorage.getItem('token')
+
    const fetchCheckList = () => {
       axios
         .get(
           `${API}/checklist`,
            {
-    headers: {
-        'Authorization': `Bearer ${TOKEN}`
-    }
-}
+            headers: {
+              'Authorization': `Bearer ${TOKEN}`
+            }
+          }
         )
         .then(function (response) {
            
@@ -97,10 +91,6 @@ const TOKEN = localStorage.getItem('token')
     };
 
    
-    console.log("dataChecklist", dataChecklist)
-
-
-
   const handleTambahNotes = (e) => {
       e.preventDefault();
     const headers = {
@@ -282,60 +272,47 @@ const TOKEN = localStorage.getItem('token')
                 ><i class="bi bi-gear"></i></button> 
 
                 <Overlay
-        show={showPop}
-        target={target}
-        placement="bottom"
-        container={ref}
-        containerPadding={20}
-      >
-        <Popover id="popover-contained">
+                  show={showPop}
+                  target={target}
+                  placement="bottom"
+                  container={ref}
+                  containerPadding={20}>
+                  <Popover id="popover-contained">
         
-          <Popover.Body>
-           <ul class="list-group list-group-flush">
+                  <Popover.Body>
+                    <ul class="list-group list-group-flush">
             
-              <li class="list-group-item" onClick={() => handleSetId(data?.id)}>Tambah Item</li>
-              <li class="list-group-item" onClick={() => setDeleteItemShow(true)}>Delete Item</li>
-              <li class="list-group-item">Edit Item</li>
-              <li class="list-group-item" onClick={() => setRenameShow(true)}>Rename Item</li>
-              <li class="list-group-item" onClick={() => setDeleteShow(true)}>Delete Checklist</li>
-            </ul>
-          </Popover.Body>
-        </Popover>
-      </Overlay>
-                </div>
-              
+                      <li class="list-group-item" onClick={() => handleSetId(data?.id)}>Tambah Item</li>
+                      <li class="list-group-item" onClick={() => setDeleteItemShow(true)}>Delete Item</li>
+                      <li class="list-group-item">Edit Item</li>
+                      <li class="list-group-item" onClick={() => setRenameShow(true)}>Rename Item</li>
+                      <li class="list-group-item" onClick={() => setDeleteShow(true)}>Delete Checklist</li>
+                    </ul>
+                  </Popover.Body>
+                </Popover>
+              </Overlay>
               </div>
-              <div className="row pb-3 px-5">
+            </div>
+            <div className="row pb-3 px-5">
+              { data?.items && data?.items.map((item, i) => ( 
 
-                {
-        data?.items && data?.items.map((item, i) => ( 
-
- <div className="form-check">
-          <input className="form-check-input" type="checkbox" value={item?.id} id="defaultCheck1"
-          // checked={
-          //   orderType === "SINGLE" ?
-          //   true : false
-          // }
-          onChange={(e) => handleRenameId(item?.id, item?.name)}
-          />
+                <div className="form-check">
+                  <input className="form-check-input" type="checkbox" value={item?.id} id="defaultCheck1"
+                    onChange={(e) => handleRenameId(item?.id, item?.name)}
+                  />
          
-          {item.name == null ? '-' : item?.name}
-        </div>
-        ))}
-        
-        
+                    {item.name == null ? '-' : item?.name}
+                  </div>
+                ))}
               </div>
           </Item>
             // ))
         ))}
       </Masonry>
     </Box>
-
-
-          </div>
-         
-      </div>
-    </section>
+    </div>
+  </div>
+</section>
    
 
    <Modal show={show} onHide={handleClose} animation={false}>
@@ -345,14 +322,13 @@ const TOKEN = localStorage.getItem('token')
         <Modal.Body>
           <div className="row px-3">
             <div className="col ">
-          <div className="row">
-            Judul Jadwal :
-            <input type="text" className="form-control" placeholder="Masukkan Judul"  
-            value={nameJadwal}
-            onChange={(e) => setNameJadwal(e.target.value)}
-            />
-          </div>
-      
+              <div className="row">
+                  Judul Jadwal :
+                  <input type="text" className="form-control" placeholder="Masukkan Judul"  
+                  value={nameJadwal}
+                  onChange={(e) => setNameJadwal(e.target.value)}
+                  />
+              </div>
           </div>
           </div>
         </Modal.Body>
@@ -418,9 +394,7 @@ const TOKEN = localStorage.getItem('token')
 
         <Modal
         show={renameShow}
-        onHide={() => setRenameShow(false)}
-       
-      >
+        onHide={() => setRenameShow(false)}>
         <Modal.Header closeButton>
           <Modal.Title >
             Edit Item Jadwal
@@ -449,7 +423,6 @@ const TOKEN = localStorage.getItem('token')
       <Modal
         show={deleteItemShow}
         onHide={() => setDeleteItemShow(false)}
-       
       >
         <Modal.Header closeButton>
          
