@@ -33,7 +33,10 @@ export default function Home() {
   const [nameItems, setNameItems] = useState();
   const [idJadwal, setIdJadwal] = useState();
   const [dataChecklist, setDataChecklist] = useState();
-  
+  const [renameShow, setRenameShow] = useState(false);
+  const [editItems, setEditItems] = useState();
+  const [idItems, setIdItems] = useState();
+
   const [showPop, setShowPop] = useState(false);
   const [target, setTarget] = useState(null);
   const ref = useRef(null);
@@ -47,6 +50,7 @@ export default function Home() {
     setShowPop(!showPop);
     setTarget(e.target);
     setIdJadwal(id)
+    
   };
 
 
@@ -58,6 +62,13 @@ export default function Home() {
   }
 
   console.log("idJadwal", idJadwal)
+
+   const handleRenameId = (id, name) => {
+    setIdItems(id)
+    setEditItems(name)
+  }
+
+  console.log("rename", idItems, editItems)
 
 const TOKEN = localStorage.getItem('token')
    const fetchCheckList = () => {
@@ -172,6 +183,35 @@ const TOKEN = localStorage.getItem('token')
       });
   };
 
+  const handleRenameItems = (e) => {
+      e.preventDefault();
+    const headers = {
+      'Authorization': `Bearer ${TOKEN}`
+    };
+    axios
+      .put(
+        `${API}/checklist/${idJadwal}/item/rename/${idItems}`,
+        {
+          
+          name: editItems
+        },
+        {
+          headers: headers,
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        alert("Jadwal Berhasil Ditambah");
+        window.location.reload();
+      })
+      .catch(function (error) {
+        console.log(error);
+        alert(
+          "Jadwal Gagal Di Tambah"
+        );
+      });
+  };
+
     useEffect(() => {
         fetchCheckList();
       }, []);
@@ -230,7 +270,7 @@ const TOKEN = localStorage.getItem('token')
               <li class="list-group-item" onClick={() => handleSetId(data?.id)}>Tambah Item</li>
               <li class="list-group-item">Delete Item</li>
               <li class="list-group-item">Edit Item</li>
-              <li class="list-group-item">Rename Item</li>
+              <li class="list-group-item" onClick={() => setRenameShow(true)}>Rename Item</li>
               <li class="list-group-item" onClick={() => setDeleteShow(true)}>Delete Checklist</li>
             </ul>
           </Popover.Body>
@@ -245,12 +285,12 @@ const TOKEN = localStorage.getItem('token')
         data?.items && data?.items.map((item, i) => ( 
 
  <div className="form-check">
-          <input className="form-check-input" type="checkbox" value="SINGLE" id="defaultCheck1"
+          <input className="form-check-input" type="checkbox" value={item?.id} id="defaultCheck1"
           // checked={
           //   orderType === "SINGLE" ?
           //   true : false
           // }
-          // onChange={(e) => setOrderType(e.target.value)}
+          onChange={(e) => handleRenameId(item?.id, item?.name)}
           />
          
           {item.name == null ? '-' : item?.name}
@@ -330,7 +370,6 @@ const TOKEN = localStorage.getItem('token')
 
 
        <Modal
-       
         show={deleteShow}
         onHide={() => setDeleteShow(false)}
        
@@ -347,6 +386,35 @@ const TOKEN = localStorage.getItem('token')
           </Button>
           <Button variant="primary" onClick={(e) => handleDeleteChecklist(e)}>
             Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+        <Modal
+        show={renameShow}
+        onHide={() => setRenameShow(false)}
+       
+      >
+        <Modal.Header closeButton>
+          <Modal.Title >
+            Edit Item Jadwal
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Item Jadwal :
+            <input type="text" className="form-control" placeholder="Masukkan deskripsi Item Jadwal"  
+            value={editItems}
+            onChange={(e) => setEditItems(e.target.value)}
+            />
+        </Modal.Body>
+           <Modal.Footer>
+          <Button variant="secondary" onClick={() => setDeleteShow(false)}>
+            Close
+          </Button>
+          <Button variant="primary" 
+          onClick={(e)=> {handleRenameItems(e)}}
+          >
+            Save 
           </Button>
         </Modal.Footer>
       </Modal>
