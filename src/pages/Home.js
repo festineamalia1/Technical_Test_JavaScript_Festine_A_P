@@ -25,14 +25,26 @@ const Item = styled(Paper)(({ theme }) => ({
 export default function Home() {
 
     const [show, setShow] = useState(false);
-
+  const [smShow, setSmShow] = useState(false);
      const [nameJadwal, setNameJadwal] = useState();
+
+       const [nameItems, setNameItems] = useState();
+          const [idJadwal, setIdJadwal] = useState();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
 
+
+
 const [dataChecklist, setDataChecklist] = useState();
+
+  const handleSetId = (id) => {
+    setSmShow(true)
+    setIdJadwal(id)
+  }
+
+  console.log("idJadwal", idJadwal)
 
 const TOKEN = localStorage.getItem('token')
    const fetchCheckList = () => {
@@ -64,7 +76,7 @@ const TOKEN = localStorage.getItem('token')
 
 
 
-       const handleTambahNotes = (e) => {
+  const handleTambahNotes = (e) => {
       e.preventDefault();
     const headers = {
       'Authorization': `Bearer ${TOKEN}`
@@ -89,6 +101,35 @@ const TOKEN = localStorage.getItem('token')
         console.log(error);
         alert(
           "Jadwal Gagal Di Tambah"
+        );
+      });
+  };
+
+    const handleTambahItems = (e) => {
+      e.preventDefault();
+    const headers = {
+      'Authorization': `Bearer ${TOKEN}`
+    };
+    axios
+      .post(
+        `${API}/checklist/${idJadwal}/item`,
+        {
+          
+          itemName: nameItems
+        },
+        {
+          headers: headers,
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        alert("Item Berhasil Ditambah");
+        window.location.reload();
+      })
+      .catch(function (error) {
+        console.log(error);
+        alert(
+          "Item Gagal Di Tambah"
         );
       });
   };
@@ -124,8 +165,17 @@ const TOKEN = localStorage.getItem('token')
           // key={index} 
           // sx={{ height }}
           >
-            <div className="row py-3 px-5">
-              {data?.name}
+            <div className="row py-3 px-3 d-flex align-items-center">
+              <div className="col-md-9">
+                <h5>{data?.name}</h5>
+                
+                </div>
+              <div className="col d-flex align-items-end justify-content-end">
+                <button type="button" class="btn btn-outline-info"
+                onClick={() => handleSetId(data?.id)}
+                >+</button> 
+                </div>
+              
               </div>
               <div className="row pb-3 px-5">
 
@@ -181,6 +231,34 @@ const TOKEN = localStorage.getItem('token')
             Close
           </Button>
           <Button variant="primary" onClick={(e)=> {handleTambahNotes(e)}}>
+            Save 
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+       
+        show={smShow}
+        onHide={() => setSmShow(false)}
+       
+      >
+        <Modal.Header closeButton>
+          <Modal.Title >
+            Tambah Item Jadwal
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Item Jadwal :
+            <input type="text" className="form-control" placeholder="Masukkan deskripsi Item Jadwal"  
+            value={nameItems}
+            onChange={(e) => setNameItems(e.target.value)}
+            />
+        </Modal.Body>
+           <Modal.Footer>
+          <Button variant="secondary" onClick={() => setSmShow(false)}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={(e)=> {handleTambahItems(e)}}>
             Save 
           </Button>
         </Modal.Footer>

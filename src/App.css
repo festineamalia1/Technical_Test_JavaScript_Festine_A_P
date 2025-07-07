@@ -351,7 +351,9 @@ align-items: center;
 .pic-rocket-detail{
   width: 300px;
 }
-
+.css-1qeliq-MuiPaper-root{
+  text-align: justify !important;
+}
 /* ---------------------------------------------------------------------------------------------------- */
 
 
