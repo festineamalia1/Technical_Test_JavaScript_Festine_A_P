@@ -54,6 +54,7 @@ export default function Home() {
 
   const handleSetId = (id) => {
     setSmShow(true)
+    
   }
 
   console.log("idJadwal", idJadwal)
