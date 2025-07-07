@@ -13,8 +13,7 @@ const RegisterForm = (props) => {
   //   history.push(`/home`);
   // };
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
    const [konfirm, setKonfirm] = useState("");
@@ -23,25 +22,19 @@ const RegisterForm = (props) => {
 
     const handleRegist = (e) => {
        e.preventDefault();
-    const headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-    };
+   
     axios
       .post(
-        `${API}/Registration`,
+        `${API}/register`,
        {
         email: email,
-        first_name: firstName,
-        last_name: lastName,
+        username: userName,
         password: password
-},
-        {
-          headers: headers,
         }
       )
       .then(function (response) {
         console.log(response);
-        alert("tambah Data Berhasil");
+        alert("Registrasi  Berhasil");
         window.location.reload();
       })
       .catch(function (error) {
@@ -70,7 +63,9 @@ const RegisterForm = (props) => {
          <span className="input-group-text bg-white">
            <i className="bi bi-envelope"></i>
          </span>
-         <input type="email" className="form-control border-start-0" placeholder="Masukkan email anda" value={email} onChange={(e)=> {setEmail(e.target.value)}} />
+         <input type="email" className="form-control border-start-0" placeholder="Masukkan email anda" 
+         value={email} 
+         onChange={(e)=> {setEmail(e.target.value)}} />
        </div>
      </div>
      <div className="mb-3">
@@ -78,15 +73,8 @@ const RegisterForm = (props) => {
          <span className="input-group-text bg-white">
            <i className="bi bi-person"></i>
          </span>
-         <input type="text" className="form-control border-start-0" placeholder="Nama depan" value={firstName} onChange={(e)=> {setFirstName(e.target.value)}} />
-       </div>
-     </div>
-     <div className="mb-3">
-       <div className="input-group ">
-         <span className="input-group-text bg-white">
-           <i className="bi bi-person"></i>
-         </span>
-         <input type="text" className="form-control border-start-0" placeholder="Nama belakang" value={lastName} onChange={(e)=> {setLastName(e.target.value)}}/>
+         <input type="text" className="form-control border-start-0" placeholder="Username" 
+         value={userName} onChange={(e)=> {setUserName(e.target.value)}} />
        </div>
      </div>
      <div className="mb-3">

@@ -3,6 +3,11 @@ import { connect } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 const NavBar = (props) => {
   const navigate = useNavigate();
+
+  const handleLogout= () => {
+    localStorage.removeItem('token')
+    navigate('/')
+  }
   return (
     <>
      
@@ -18,7 +23,7 @@ const NavBar = (props) => {
         <ul class="navbar-nav flex-row gap-3">
           <li className="nav-item nav-link-nonactive">
             <div class="nav-link " 
-            onClick={() => {navigate('/')}}>Logout</div>
+            onClick={() => {handleLogout()}}>Logout</div>
           </li>
         </ul>
       </div>
