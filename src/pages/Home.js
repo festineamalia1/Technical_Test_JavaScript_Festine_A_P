@@ -6,6 +6,8 @@ import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Masonry from '@mui/lab/Masonry';
+import Modal from 'react-bootstrap/Modal';
+import Button from 'react-bootstrap/Button';
 
 // const heights = [150, 30, 90, 70, 90, 100, 150, 30, 50, 80];
 
@@ -21,6 +23,12 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Home() {
+
+    const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
 
 const [dataChecklist, setDataChecklist] = useState();
 
@@ -67,8 +75,15 @@ const TOKEN = localStorage.getItem('token')
 
     <section id="layanan">
       <div className="container">
+
+        <div className="row mt-5">
+          <div className="col">Tambah Notes</div>
+              <div className="col d-flex align-items-end justify-content-end">
+                <button type="button" class="btn btn-success" onClick={handleShow}>Tambah</button>
+              </div>
+        </div>
        
-          <div className="row mt-5">
+          <div className="row mt-3">
             <Box sx={{  minHeight: 253 }}>
       <Masonry columns={4} spacing={2}>
         {
@@ -112,6 +127,38 @@ const TOKEN = localStorage.getItem('token')
       </div>
     </section>
    
+
+   <Modal show={show} onHide={handleClose} animation={false}>
+        <Modal.Header closeButton>
+          <Modal.Title>Tambah Jadwal</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="row px-3">
+            <div className="col ">
+          <div className="row">
+            <input type="text" className="form-control" placeholder="Masukkan Judul"  />
+          </div>
+           <div className="row mt-3">
+            <input type="text" className="form-control" placeholder="Masukkan Item Jadwal"  />
+          </div>
+           <div className="row mt-3">
+            <input type="text" className="form-control" placeholder="Masukkan Item Jadwal"  />
+          </div>
+           <div className="row mt-3">
+            <input type="text" className="form-control" placeholder="Masukkan Item Jadwal"  />
+          </div>
+          </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={handleClose}>
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
