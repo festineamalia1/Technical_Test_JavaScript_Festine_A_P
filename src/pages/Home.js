@@ -36,6 +36,7 @@ export default function Home() {
   const [renameShow, setRenameShow] = useState(false);
   const [editItems, setEditItems] = useState();
   const [idItems, setIdItems] = useState();
+  const [deleteItemShow, setDeleteItemShow] = useState(false);
 
   const [showPop, setShowPop] = useState(false);
   const [target, setTarget] = useState(null);
@@ -212,6 +213,31 @@ const TOKEN = localStorage.getItem('token')
       });
   };
 
+  const handleDeleteItems = (e) => {
+      e.preventDefault();
+    const headers = {
+      'Authorization': `Bearer ${TOKEN}`
+    };
+    axios
+      .delete(
+        `${API}/checklist/${idJadwal}/item/${idItems}`,
+        {
+          headers: headers,
+        }
+      )
+      .then(function (response) {
+        console.log(response);
+        alert("Delete Item Berhasil");
+        window.location.reload();
+      })
+      .catch(function (error) {
+        console.log(error);
+        alert(
+          "Delete Item Berhasil"
+        );
+      });
+  };
+
     useEffect(() => {
         fetchCheckList();
       }, []);
@@ -268,7 +294,7 @@ const TOKEN = localStorage.getItem('token')
            <ul class="list-group list-group-flush">
             
               <li class="list-group-item" onClick={() => handleSetId(data?.id)}>Tambah Item</li>
-              <li class="list-group-item">Delete Item</li>
+              <li class="list-group-item" onClick={() => setDeleteItemShow(true)}>Delete Item</li>
               <li class="list-group-item">Edit Item</li>
               <li class="list-group-item" onClick={() => setRenameShow(true)}>Rename Item</li>
               <li class="list-group-item" onClick={() => setDeleteShow(true)}>Delete Checklist</li>
@@ -415,6 +441,30 @@ const TOKEN = localStorage.getItem('token')
           onClick={(e)=> {handleRenameItems(e)}}
           >
             Save 
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+
+      <Modal
+        show={deleteItemShow}
+        onHide={() => setDeleteItemShow(false)}
+       
+      >
+        <Modal.Header closeButton>
+         
+        </Modal.Header>
+        <Modal.Body>
+         Apakah Anda yakin menghapus Item ini ?
+        </Modal.Body>
+           <Modal.Footer>
+          <Button variant="secondary" onClick={() => setDeleteItemShow(false)}>
+            Close
+          </Button>
+          <Button variant="primary" 
+          onClick={(e) => handleDeleteItems(e)}
+          >
+            Delete
           </Button>
         </Modal.Footer>
       </Modal>
